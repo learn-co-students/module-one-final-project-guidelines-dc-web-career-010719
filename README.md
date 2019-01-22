@@ -9,3 +9,4 @@ Project description:
 5. As users, we want to be able to retrieve the most favorite recipe.
 6. As users, we want to be able to retrieve the least favorite recipe.
 7. As users, we want to be able to find the most used ingredient.
+8. As users, we want to be able to find the least used ingredient.
