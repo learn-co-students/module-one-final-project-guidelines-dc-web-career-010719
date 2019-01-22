@@ -8,3 +8,4 @@ Project description:
 4. As users, we want to be able to eliminate recipes from our favorite list.
 5. As users, we want to be able to retrieve the most favorite recipe.
 6. As users, we want to be able to retrieve the least favorite recipe.
+7. 
