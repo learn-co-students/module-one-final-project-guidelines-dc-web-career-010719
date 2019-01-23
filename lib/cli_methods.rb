@@ -174,3 +174,12 @@ def most_popular_recipes
     format_recipe(r)
   end
 end
+
+def most_used_ingredients
+  line
+  puts "Here are the five most-used ingredients among the drinks in our database:"
+  line
+  Ingredient.five_most_used_ingredients.each_with_index do |ing, ind|
+    puts "#{ind+1}. #{ing.name.capitalize}"
+  end
+end

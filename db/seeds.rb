@@ -93,3 +93,20 @@ def populate(array)
 end
 
 populate(drinks)
+
+mod1 = %w(Shannon, Hai, Matt, James, Paul, Melanie, Jake, Kyle, Artem, Chris, Ben, Ryan, Andrea, Heloise, Phil)
+
+def create_users(array)
+  array.each {|name| User.find_or_create_by(name:name)}
+end
+
+create_users(mod1)
+
+def seed_with_favorites
+  User.all.each do |user|
+    nums = Array.new(rand(1..5)).map{|n|rand(1..5)}
+    nums.uniq.each {|n| user.add_to_favorites(Recipe.find(n))}
+  end
+end
+
+seed_with_favorites
