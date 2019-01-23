@@ -1,3 +1,3 @@
-class User < ActiveRecord::Base [4.2]
+class User < ActiveRecord::Base
 has_many :festivals, through: :planners
 end

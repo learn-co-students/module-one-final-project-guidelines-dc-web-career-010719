@@ -1,4 +1,4 @@
-class Planner < ActiveRecord::Base [4.2]
+class Planner < ActiveRecord::Base
 belongs_to :user
 belongs_to :festival
 end
