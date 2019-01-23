@@ -6,4 +6,4 @@ require_all 'lib'
 require_all 'app'
 
 old_logger = ActiveRecord::Base.logger
-ActiveRecord::Base.logger.level = 1 
+ActiveRecord::Base.logger.level = 1
