@@ -20,7 +20,7 @@ end
 
 def main_menu_loop
   loop do
-  input = gets.chomp
+  input = gets.chomp.to_i
     case input
     when 1
       puts "keep looping"
@@ -36,7 +36,7 @@ def main_menu_loop
       puts "Put the camera down and enjoy yourself!"
       break
     else
-      puts "Hmmm... 1-6, not #{user_input}, try again."
+      puts "Hmmm... 1-6, not #{input}, try again."
       end
     end
   end
