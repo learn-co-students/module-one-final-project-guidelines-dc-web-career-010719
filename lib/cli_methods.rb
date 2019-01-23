@@ -41,12 +41,17 @@ def welcome_screen
 puts "Welcome to Quicker Liquor!  Please enter your name:"
 name = gets.chomp
 user = User.find_or_create_by(name: name)
-puts "-----------------------------"
+line
 puts "Hello, #{user.name}! I am QL bot. I take commands from you."
 user
 end
 
+def line
+  puts "-----------------------------"
+end
+
 def help_menu
+  line
   puts "Here are your options:"
   puts "1. See a list of all recipes by name"
   puts "2. Search for a recipe by name"
@@ -56,10 +61,12 @@ def help_menu
   puts "6. See a list of the most popular recipes"
   puts "7. See a list of the most-used ingredients"
   puts "8. Exit the program"
-  puts "Type 'menu' at any time to return to the options menu"
+  puts ""
+  puts "Type 'menu' at any time to return to the options menu!"
 end
 
 def get_number(user)
+  line
   puts "Please enter a number(1-8) to choose an option, or enter menu to see the option menu:"
   number = gets.chomp
   run(user, number)
@@ -124,20 +131,7 @@ def find_recipe
     find_recipe
   else
     rec = Recipe.find_by(name: name)
-    puts "-----------------------------"
-    puts "* Recipe: #{rec.name}"
-    puts "* Instruction: #{rec.instruction}"
-    recipe_ings = RecipeIngredient.where("recipe_id = ?", rec.id)
-    ams = recipe_ings.map(&:amount)
-    ings = rec.ingredients.map(&:name)
-    array = ings.zip(ams)
-    puts "* List of ingredients:"
-    array.each do |ing|
-      if ing[1] == ""
-        ing[1] = "to taste"
-      end
-      puts "   #{ing[0].capitalize} -- #{ing[1]}"
-    end
+    format_recipe(rec)
   end
 end
 
@@ -147,4 +141,30 @@ def search_by_ingredient
   if !Ingredient.find_by(name: name)
     puts "We don't have that recipe."
     search_by_ingredient
+  end
+end
+
+def format_recipe(recipe)
+  line
+  puts "* Recipe: #{recipe.name}"
+  puts "* Instruction: #{recipe.instruction}"
+  recipe_ings = RecipeIngredient.where("recipe_id = ?", recipe.id)
+  ams = recipe_ings.map(&:amount)
+  ings = recipe.ingredients.map(&:name)
+  array = ings.zip(ams)
+  puts "* List of ingredients:"
+  array.each do |ing|
+    if ing[1] == ""
+      ing[1] = "to taste"
+    end
+    puts "   #{ing[0].capitalize} -- #{ing[1]}"
+  end
+end
+
+def most_popular_recipes
+  Recipe.five_most_popular_recipes.each_with_index do |r,i|
+    line
+    puts "The number #{i+1} recipe is:"
+    format_recipe(r)
+  end
 end

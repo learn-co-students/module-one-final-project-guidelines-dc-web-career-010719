@@ -40,6 +40,34 @@ drinks = [
     amount3: "0.25 cups",
     amount4: "3 tbsp fresh",
     amount5: "",
+  },
+  {
+    name: "Martini",
+    instruction: "Straight: Pour all ingredients into mixing glass with ice cubes. Stir well. Strain in chilled martini cocktail glass. Squeeze oil from lemon peel onto the drink, or garnish with olive.",
+    ingredient1: "gin",
+    ingredient2: "dry vermouth",
+    ingredient3: "olive",
+    ingredient4: "",
+    ingredient5: "",
+    amount1: "1 2/3 oz",
+    amount2: "1/3 oz",
+    amount3: "1",
+    amount4: "",
+    amount5: "",
+  },
+  {
+    name: "Vodka Martini",
+    instruction: "Shake the vodka and vermouth together with a number of ice cubes, strain into a cocktail glass, add the olive and serve.",
+    ingredient1: "vodka",
+    ingredient2: "tequila",
+    ingredient3: "dry vermouth",
+    ingredient4: "olive",
+    ingredient5: "",
+    amount1: "1.5 oz",
+    amount2: "0.75 oz",
+    amount3: "1",
+    amount4: "",
+    amount5: "",
   }
 ]
 
@@ -57,7 +85,7 @@ def populate(array)
     end
     ings.each_with_index do |ing, index|
       if !ings[index].empty?
-        ing = Ingredient.create(name: ings[index])
+        ing = Ingredient.find_or_create_by(name: ings[index])
         rec.add_ingredient(ing, ams[index])
       end
     end
