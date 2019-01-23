@@ -94,7 +94,7 @@ end
 
 populate(drinks)
 
-mod1 = %w(Shannon, Hai, Matt, James, Paul, Melanie, Jake, Kyle, Artem, Chris, Ben, Ryan, Andrea, Heloise, Phil)
+mod1 = %w(Shannon Hai Matt James Paul Melanie Jake Kyle Artem Chris Ben Ryan Andrea Heloise Phil)
 
 def create_users(array)
   array.each {|name| User.find_or_create_by(name:name)}
