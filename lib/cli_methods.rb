@@ -92,7 +92,7 @@ def run(user, number)
     get_number(user)
   when "5"
     puts "You selected option 5."
-    edit_favorites()
+    edit_favorites_list(user)
     get_number(user)
   when "6"
     puts "You selected option 6."
@@ -123,12 +123,23 @@ def list
   end
 end
 
+def format_recipe_name(recipe_name)
+  recipe_name.split(" ").map(&:capitalize).join(" ")
+end
+
+def recipe_exists?(recipe_name)
+  if !Recipe.find_by(name: recipe_name)
+    puts "We don't have that recipe."
+    return false
+  else
+    return true
+  end
+end
+
 def find_recipe
   puts "Please input the recipe name:"
-  name = gets.chomp.split(" ").map(&:capitalize).join(" ")
-  if !Recipe.find_by(name: name)
-    puts "We don't have that recipe."
-  else
+  name = format_recipe_name(gets.chomp)
+  if recipe_exists?(name)
     rec = Recipe.find_by(name: name)
     format_recipe(rec)
   end
@@ -181,5 +192,34 @@ def most_used_ingredients
   line
   Ingredient.five_most_used_ingredients.each_with_index do |ing, ind|
     puts "#{ind+1}. #{ing.name.capitalize}"
+  end
+end
+
+def edit_favorites_list(user)
+  line
+  user.view_your_favorites_list
+  line
+  puts "Enter 'add' to add to your favorites list, or 'remove' to remove something you've already favorited."
+  input = gets.chomp.downcase
+  if input == "add"
+    line
+    puts "Please enter the name of the recipe you'd like to favorite:"
+    recipe = format_recipe_name(gets.chomp)
+    if recipe_exists?(recipe)
+      user.add_to_favorites(Recipe.find_by(name:recipe))
+      line
+      user.view_your_favorites_list
+    end
+  elsif input == "remove"
+    line
+    puts "Please enter the name of the recipe you'd like to remove:"
+    recipe = format_recipe_name(gets.chomp)
+    if recipe_exists?(recipe)
+      user.remove_from_favorites(Recipe.find_by(name:recipe))
+      line
+      user.view_your_favorites_list
+    end
+  else
+    "Sorry, I don't recognize that command."
   end
 end
