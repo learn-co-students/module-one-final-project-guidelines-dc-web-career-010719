@@ -41,7 +41,8 @@ def welcome_screen
 puts "Welcome to Quicker Liquor!  Please enter your name:"
 name = gets.chomp
 user = User.find_or_create_by(name: name)
-puts "Welcome, #{user.name}!"
+puts "-----------------------------"
+puts "Hello, #{user.name}! I am QL bot. I take commands from you."
 user
 end
 
@@ -59,7 +60,7 @@ def help_menu
 end
 
 def get_number(user)
-  puts "Please enter a number(1-8) to choose an option:"
+  puts "Please enter a number(1-8) to choose an option, or enter menu to see the option menu:"
   number = gets.chomp
   run(user, number)
 end
@@ -71,24 +72,27 @@ def run(user, number)
     list
     get_number(user)
   when "2"
-    puts "You selected 2"
+    puts "You selected option 2."
     find_recipe
     get_number(user)
   when "3"
-    puts "You selected 3"
-    search_by_ingredient()
+    puts "You selected option 3."
+    search_by_ingredient
     get_number(user)
   when "4"
-    puts "You selected 4"
+    puts "You selected option 4."
     view_favorites()
     get_number(user)
   when "5"
+    puts "You selected option 5."
     edit_favorites()
     get_number(user)
   when "6"
+    puts "You selected option 6."
     most_popular_recipes
     get_number(user)
   when "7"
+    puts "You selected option 7."
     most_used_ingredients
     get_number(user)
   when "menu"
@@ -103,7 +107,7 @@ def run(user, number)
 end
 
 def exit_program
-  puts "Goodbye!  See you again soon.  Or not."
+  puts "Goodbye! See you again soon. Or not."
 end
 
 def list
@@ -114,20 +118,33 @@ end
 
 def find_recipe
   puts "Please input the recipe name:"
-  name = gets.chomp
-  puts "-----------------------------"
-  rec = Recipe.find_by(name: name)
-  puts rec.name
-  puts rec.instruction
-  recipe_ings = RecipeIngredient.where("recipe_id = ?", rec.id)
-  ams = recipe_ings.map(&:amount)
-  ings = rec.ingredients.map(&:name)
-  array = ings.zip(ams)
-  puts "List of ingredients:"
-  array.each do |ing|
-    if ing[1] == ""
-      ing[1] = "to taste"
+  name = gets.chomp.split(" ").map(&:capitalize).join(" ")
+  if !Recipe.find_by(name: name)
+    puts "We don't have that recipe."
+    find_recipe
+  else
+    rec = Recipe.find_by(name: name)
+    puts "-----------------------------"
+    puts "* Recipe: #{rec.name}"
+    puts "* Instruction: #{rec.instruction}"
+    recipe_ings = RecipeIngredient.where("recipe_id = ?", rec.id)
+    ams = recipe_ings.map(&:amount)
+    ings = rec.ingredients.map(&:name)
+    array = ings.zip(ams)
+    puts "* List of ingredients:"
+    array.each do |ing|
+      if ing[1] == ""
+        ing[1] = "to taste"
+      end
+      puts "   #{ing[0].capitalize} -- #{ing[1]}"
     end
-    puts "#{ing[0].capitalize} -- #{ing[1]}"
   end
+end
+
+def search_by_ingredient
+  puts "Please input the ingredient name:"
+  name = gets.chomp.split(" ").map(&:capitalize).join(" ")
+  if !Ingredient.find_by(name: name)
+    puts "We don't have that recipe."
+    search_by_ingredient
 end
