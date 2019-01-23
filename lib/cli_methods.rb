@@ -121,7 +121,6 @@ def find_recipe
   name = gets.chomp.split(" ").map(&:capitalize).join(" ")
   if !Recipe.find_by(name: name)
     puts "We don't have that recipe."
-    find_recipe
   else
     rec = Recipe.find_by(name: name)
     puts "-----------------------------"
@@ -143,8 +142,16 @@ end
 
 def search_by_ingredient
   puts "Please input the ingredient name:"
-  name = gets.chomp.split(" ").map(&:capitalize).join(" ")
+  name = gets.chomp.split(" ").map(&:downcase).join(" ")
   if !Ingredient.find_by(name: name)
-    puts "We don't have that recipe."
-    search_by_ingredient
+    puts "We don't have that ingredient."
+  else
+    ing = Ingredient.find_by(name: name)
+    recipe_ings = RecipeIngredient.select(:recipe_id).where("ingredient_id = ?", ing.id)
+    reps = recipe_ings.map { |ri| Recipe.find(ri.recipe_id).name }
+    puts "Here is the list of recipes having #{name}:"
+    reps.each_with_index do |rep_name, index|
+      puts "  #{index+1}. #{rep_name}"
+    end
+  end
 end

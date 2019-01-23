@@ -57,7 +57,7 @@ def populate(array)
     end
     ings.each_with_index do |ing, index|
       if !ings[index].empty?
-        ing = Ingredient.create(name: ings[index])
+        ing = Ingredient.find_or_create_by(name: ings[index])
         rec.add_ingredient(ing, ams[index])
       end
     end
