@@ -88,7 +88,7 @@ def run(user, number)
     get_number(user)
   when "4"
     puts "You selected option 4."
-    view_favorites()
+    user.view_your_favorites_list
     get_number(user)
   when "5"
     puts "You selected option 5."
