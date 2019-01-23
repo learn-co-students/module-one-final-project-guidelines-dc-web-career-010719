@@ -40,12 +40,12 @@ def welcome_screen
 "
 puts "Welcome to Quicker Liquor!  Please enter your name:"
 name = gets.chomp
-User.find_or_create_by(name: name)
+user = User.find_or_create_by(name: name)
+puts "Welcome, #{user.name}!"
 end
 
-def help_menu(user)
-  puts "Welcome, #{user.name}!"
-  puts "Here are the options that we have:"
+def help_menu
+  puts "Here are your options:"
   puts "1. See a list of all recipes by name"
   puts "2. Search for a recipe by name"
   puts "3. Search for a list of recipes by ingredient"
@@ -53,9 +53,8 @@ def help_menu(user)
   puts "5. Edit your favorites list"
   puts "6. See a list of the most popular recipes"
   puts "7. See a list of the most-used ingredients"
-  puts "8. Return to menu"
-  puts "9. Exit the program"
-  puts "Type 'menu' at any time to return to the menu"
+  puts "8. Exit the program"
+  puts "Type 'menu' at any time to return to the options menu"
 end
 
 def get_number
