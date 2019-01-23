@@ -13,16 +13,15 @@ def menu
   puts "2. View festivals"
   puts "3. Add festivals to planner"
   puts "4. View your schedule"
-  puts "5. View the squads schdeule"
+  puts "5. View the team schdeule"
   puts "6. Exit"
   main_menu_loop
 end
 
 def main_menu_loop
-  binding.pry
-  user_input = get.chomp
   loop do
-     case user_input
+  input = gets.chomp
+    case input
     when 1
       puts "keep looping"
     when 2
@@ -34,8 +33,10 @@ def main_menu_loop
     when 5
       puts "keep looping"
     when 6
-      puts "Put the camera down and enjoy yourself"
+      puts "Put the camera down and enjoy yourself!"
       break
+    else
+      puts "Hmmm... 1-6, not #{user_input}, try again."
       end
     end
   end
