@@ -16,12 +16,12 @@ describe "Recipe" do
     end
 
   end
-  # 
-  # describe "#most_popular_recipe" do
-  #
-  #   let!()
-  #
-  #
-  # end
+  
+  describe "#most_popular_recipe" do
+
+    let!()
+
+
+  end
 
 end
