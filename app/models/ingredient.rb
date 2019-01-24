@@ -11,4 +11,9 @@ class Ingredient < ActiveRecord::Base
     top5.to_h.keys.map {|id| Ingredient.find(id)}
   end
 
+  def self.used_ingredients
+    ings = RecipeIngredient.group("ingredient_id").count.sort_by{|k,v|v}.reverse
+    ings.to_h.keys.map {|id| Ingredient.find(id)}
+  end
+
 end
