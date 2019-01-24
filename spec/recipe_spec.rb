@@ -5,8 +5,9 @@ describe "Recipe" do
 
   describe "#recipe_exists?" do
 
+    let!(:recipe) { Recipe.create(name:"Gin and Tonic")}
+
     it "receives a recipe name and returns true if that recipe exists in the database" do
-      Recipe.create(name:"Gin and Tonic")
       expect(Recipe.recipe_exists?("Gin and Tonic")).to be true
     end
 
@@ -15,9 +16,12 @@ describe "Recipe" do
     end
 
   end
-
+  # 
   # describe "#most_popular_recipe" do
-  #   Recipe.
+  #
+  #   let!()
+  #
+  #
   # end
 
 end
