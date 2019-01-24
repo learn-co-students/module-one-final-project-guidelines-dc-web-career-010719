@@ -14,7 +14,7 @@ lolla = Festival.find_or_create_by(name: "Lollapalooza", location: "Chicago, IL"
 made_in_america = Festival.find_or_create_by(name: "Made in America", location: "Philadelphia, PA", start_date: Date.parse('2019-08-31'), end_date: Date.parse('2019-09-01'), cost: 379.95)
 sxsw = Festival.find_or_create_by(name: "SXSW", location: "Austin, TX", start_date: Date.parse('2019-03-08'), end_date: Date.parse('2019-03-17'), cost: 1225.00)
 firefly = Festival.find_or_create_by(name: "Firefly", location: "Dover, Delaware", start_date: Date.parse('2019-06-21'), end_date: Date.parse('2019-06-23'), cost: 299.00)
-govenors_ball = Festival.find_or_create_by(name: "New York, New York", location: "C", start_date: Date.parse('2019-05-31'), end_date: Date.parse('2019-06-02'), cost: 379.95)
+govenors_ball = Festival.find_or_create_by(name: "Govenors Ball", location: "New York", start_date: Date.parse('2019-05-31'), end_date: Date.parse('2019-06-02'), cost: 379.95)
 nola = Festival.find_or_create_by(name: "New Orleans Jazz & Heritage Festival", location: "New Orleans, LA", start_date: Date.parse('2019-04-26'), end_date: Date.parse('2019-05-05'), cost: 500.00)
 bm = Festival.find_or_create_by(name: "Burning Man", location: "Black Rock Desert, NV", start_date: Date.parse('2019-08-25'), end_date: Date.parse('2019-09-02'), cost: 425.00)
 
