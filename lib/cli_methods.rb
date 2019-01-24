@@ -38,7 +38,7 @@ require_relative '../config/environment'
                       ==============
 
     "
-    puts "Welcome to Quicker Liquor!  Please enter your name:"
+    puts "Welcome to Quicker Liquor! Please enter your name:"
     name = gets.chomp.capitalize
     user = User.find_or_create_by(name: name)
     line
@@ -67,7 +67,7 @@ require_relative '../config/environment'
 
   def get_number(user)
     line
-    puts "Please enter a number(1-8) to choose an option, or enter menu to see the option menu:"
+    puts "Please enter a number(1-8) to choose an option, or enter menu to see the options menu:"
     number = gets.chomp
     run(user, number)
   end
@@ -170,6 +170,8 @@ require_relative '../config/environment'
   end
 
   def most_popular_recipes
+    line
+    puts "Here are the five most popular recipes in our database:"
     Recipe.five_most_popular_recipes.each_with_index do |r,i|
       line
       puts "The number #{i+1} recipe is:"
@@ -211,6 +213,6 @@ require_relative '../config/environment'
         user.view_your_favorites_list
       end
     else
-      "Sorry, I don't recognize that command."
+      puts "Sorry, I don't recognize that command."
     end
   end
