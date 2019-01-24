@@ -9,7 +9,7 @@ class Recipe < ActiveRecord::Base
   end
 
   def self.recipe_exists?(recipe_name)
-    if !self.find_by(name: recipe_name)
+    if !self.find_by(name: recipe_name) && !self.find_by(name: recipe_name.upcase)
       puts "We don't have that recipe, sorry."
       return false
     else

@@ -159,16 +159,20 @@ require 'colorized_string'
 
   def search_by_ingredient
     puts "Please input the ingredient name:"
-    name = gets.chomp.split(" ").map(&:downcase).join(" ")
-    if !Ingredient.find_by(name: name)
-      puts "We don't have that ingredient."
+    name = gets.chomp.split(" ").map(&:capitalize).join(" ")
+    if !Ingredient.where("name like ?", "%#{name}%")
+      puts "We don't have any recipes with that ingredient."
     else
-      ing = Ingredient.find_by(name: name)
-      recipe_ings = RecipeIngredient.select(:recipe_id).where("ingredient_id = ?", ing.id)
-      reps = recipe_ings.map { |ri| Recipe.find(ri.recipe_id).name }
-      puts "Here is the list of recipes having #{name}:"
-      reps.each_with_index do |rep_name, index|
-        puts "  #{index+1}. #{rep_name}"
+      ings = Ingredient.where("name like ?", "%#{name}%")
+      ings.each do |ing|
+        ris = RecipeIngredient.select(:recipe_id).where("ingredient_id = ?", ing.id)
+        recs = ris.map do |ri|
+          Recipe.find(ri.recipe_id).name
+        end
+        puts "Here are the recipes with '#{ing.name}':"
+        recs.each_with_index do |rec_name, index|
+          puts "  #{index+1}. #{rec_name}"
+        end
       end
     end
   end
@@ -183,7 +187,7 @@ require 'colorized_string'
     array = ings.zip(ams)
     puts "* List of ingredients:"
     array.each do |ing|
-      if ing[1] == ""
+      if ing[1] == "" || ing[1] == "\n"
         ing[1] = "unspecified"
       end
       puts "   #{ing[0].capitalize} -- #{ing[1]}"
@@ -217,7 +221,7 @@ require 'colorized_string'
     puts "Here are the five most-used ingredients among the drinks in our database:"
     line
     Ingredient.five_most_used_ingredients.each_with_index do |ing, ind|
-      puts "#{ind+1}. #{ing.name.capitalize}"
+      puts "#{ind+1}. #{ing.name}"
     end
   end
 
