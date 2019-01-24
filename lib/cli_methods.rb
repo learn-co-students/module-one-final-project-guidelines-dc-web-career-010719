@@ -70,7 +70,6 @@ require 'colorized_string'
 
   def menu(user)
     line
-<<<<<<< HEAD
     puts "Please choose one:".colorize(:blue)
     menu_items = {
       "See a list of all recipes by name" => 1,
@@ -84,11 +83,6 @@ require 'colorized_string'
     }
     choice = new_select("", menu_items)
     run(user, choice)
-=======
-    puts "Please enter a number(1-8) to choose an option, or enter menu to see the options menu:"
-    number = gets.chomp
-    run(user, number)
->>>>>>> 547bfd867bd16c77f630f4ec2a8c38a0d856b809
   end
 
   # def get_number(user)
@@ -155,11 +149,11 @@ require 'colorized_string'
   end
 
   def find_recipe
-    puts "Please input the recipe name:"
+    puts "Please input the recipe name:".colorize(:light_blue)
     name = format_recipe_name(gets.chomp)
     if Recipe.recipe_exists?(name)
-      rec = Recipe.find_by(name: name)
-      format_recipe(rec)
+      rec = Recipe.where("name like ?", "%#{name}%")
+      rec.each {|r| format_recipe(r)}
     end
   end
 
@@ -205,7 +199,6 @@ require 'colorized_string'
   # end
 
   def most_popular_recipes
-<<<<<<< HEAD
     puts "How many of our top recipes would you like to see? (Please enter a number.)".colorize(:light_blue)
     num = gets.chomp.to_i
     until num <= Recipe.all.size
@@ -213,11 +206,6 @@ require 'colorized_string'
       num = gets.chomp.to_i
     end
     Recipe.popular_recipes.each_with_index do |r,i|
-=======
-    line
-    puts "Here are the five most popular recipes in our database:"
-    Recipe.five_most_popular_recipes.each_with_index do |r,i|
->>>>>>> 547bfd867bd16c77f630f4ec2a8c38a0d856b809
       line
       puts "The number #{i+1} most popular recipe is:".colorize(:light_blue)
       format_recipe(r)
@@ -247,18 +235,25 @@ require 'colorized_string'
     line
     user.view_favorites_list
     line
-    # puts "Enter 'add' to add to your favorites list, or 'remove' to remove something you've already favorited."
-    # input = gets.chomp.downcase
     choice = new_select("Would you like to add to your favorites, or remove something on your list?".colorize(:light_blue), ['add', 'remove'])
     if choice == "add"
       line
-      puts "Please enter the name of the recipe you'd like to favorite:".colorize(:light_blue)
-      recipe = format_recipe_name(gets.chomp)
-      if Recipe.recipe_exists?(recipe)
-        user.add_to_favorites(Recipe.find_by(name:recipe))
-        line
-        user.view_favorites_list
+      # puts "Please enter the name of the recipe you'd like to favorite:".colorize(:light_blue)
+      # recipe = format_recipe_name(gets.chomp)
+      if list = find_recipe
+        choices = list.map(&:name)
+        additions = new_multi_select("Which recipe(s) would you like to add?".colorize(:light_blue), choices)
+        additions.each do |addition|
+          user.add_to_favorites(Recipe.find_by(name:addition)) unless user.favorites.include?(Recipe.find_by(name:addition))
+          line
+          user.view_favorites_list
+        end
       end
+      # if Recipe.recipe_exists?(recipe)
+      #   user.add_to_favorites(Recipe.find_by(name:recipe))
+      #   line
+      #   user.view_favorites_list
+      # end
     elsif choice == "remove"
       line
       prompt = TTY::Prompt.new
@@ -267,11 +262,9 @@ require 'colorized_string'
       # puts "Please enter the name of the recipe you'd like to remove:"
       # recipe = format_recipe_name(gets.chomp)
       removals.each do |removal|
-        if Recipe.recipe_exists?(removal)
-          user.remove_from_favorites(Recipe.find_by(name:removal))
-          line
-          user.view_favorites_list
-        end
+        user.remove_from_favorites(Recipe.find_by(name:removal))
+        line
+        user.view_favorites_list
       end
     else
       puts "Sorry, I don't recognize that command."
