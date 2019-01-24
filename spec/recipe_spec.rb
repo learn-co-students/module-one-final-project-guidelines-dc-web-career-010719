@@ -37,7 +37,5 @@ describe "Recipe" do
     it "adds the amount of ingredient into the RecipeIngredient table" do
       expect(RecipeIngredient.find(1).amount).to eq("2 ounces")
     end
-
   end
-
 end

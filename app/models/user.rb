@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   end
 
   def view_favorites_list
+    line
     puts "Here is your current favorites list:".colorize(:light_blue)
     self.favorites.each do |fav|
       format_recipe(fav)
