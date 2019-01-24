@@ -10,7 +10,7 @@ class Recipe < ActiveRecord::Base
 
   def self.recipe_exists?(recipe_name)
     if !self.find_by(name: recipe_name)
-      puts "We don't have that recipe."
+      puts "We don't have that recipe, sorry."
       return false
     else
       return true

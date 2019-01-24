@@ -149,26 +149,29 @@ require 'colorized_string'
   end
 
   def find_recipe
-    puts "Please input the recipe name:"
+    puts "Please input the recipe name:".colorize(:light_blue)
     name = format_recipe_name(gets.chomp)
     if Recipe.recipe_exists?(name)
       rec = Recipe.where("name like ?", "%#{name}%")
       rec.each { |rep| format_recipe(rep) }
+      rec.each {|r| format_recipe(r)}
     end
   end
 
   def search_by_ingredient
     puts "Please input the ingredient name:"
     name = gets.chomp.split(" ").map(&:downcase).join(" ")
-    if !Ingredient.find_by(name: name)
+    if !Ingredient.where("name like ?", "%#{name}%")
       puts "We don't have that ingredient."
     else
-      ing = Ingredient.find_by(name: name)
-      recipe_ings = RecipeIngredient.select(:recipe_id).where("ingredient_id = ?", ing.id)
-      reps = recipe_ings.map { |ri| Recipe.find(ri.recipe_id).name }
-      puts "Here is the list of recipes having #{name}:"
-      reps.each_with_index do |rep_name, index|
-        puts "  #{index+1}. #{rep_name}"
+      ings = Ingredient.where("name like ?", "%#{name}%")
+      ings.each do |ing|
+        recipe_ings = RecipeIngredient.select(:recipe_id).where("ingredient_id = ?", ing.id)
+        reps = recipe_ings.map { |ri| Recipe.find(ri.recipe_id).name }
+        puts "Here is the list of recipes having #{ing.name}:"
+        reps.each_with_index do |rep_name, index|
+          puts "  #{index+1}. #{rep_name}"
+        end
       end
     end
   end
@@ -235,18 +238,25 @@ require 'colorized_string'
     line
     user.view_favorites_list
     line
-    # puts "Enter 'add' to add to your favorites list, or 'remove' to remove something you've already favorited."
-    # input = gets.chomp.downcase
     choice = new_select("Would you like to add to your favorites, or remove something on your list?".colorize(:light_blue), ['add', 'remove'])
     if choice == "add"
       line
-      puts "Please enter the name of the recipe you'd like to favorite:".colorize(:light_blue)
-      recipe = format_recipe_name(gets.chomp)
-      if Recipe.recipe_exists?(recipe)
-        user.add_to_favorites(Recipe.find_by(name:recipe))
-        line
-        user.view_favorites_list
+      # puts "Please enter the name of the recipe you'd like to favorite:".colorize(:light_blue)
+      # recipe = format_recipe_name(gets.chomp)
+      if list = find_recipe
+        choices = list.map(&:name)
+        additions = new_multi_select("Which recipe(s) would you like to add?".colorize(:light_blue), choices)
+        additions.each do |addition|
+          user.add_to_favorites(Recipe.find_by(name:addition)) unless user.favorites.include?(Recipe.find_by(name:addition))
+          line
+          user.view_favorites_list
+        end
       end
+      # if Recipe.recipe_exists?(recipe)
+      #   user.add_to_favorites(Recipe.find_by(name:recipe))
+      #   line
+      #   user.view_favorites_list
+      # end
     elsif choice == "remove"
       line
       prompt = TTY::Prompt.new
@@ -255,11 +265,9 @@ require 'colorized_string'
       # puts "Please enter the name of the recipe you'd like to remove:"
       # recipe = format_recipe_name(gets.chomp)
       removals.each do |removal|
-        if Recipe.recipe_exists?(removal)
-          user.remove_from_favorites(Recipe.find_by(name:removal))
-          line
-          user.view_favorites_list
-        end
+        user.remove_from_favorites(Recipe.find_by(name:removal))
+        line
+        user.view_favorites_list
       end
     else
       puts "Sorry, I don't recognize that command."
