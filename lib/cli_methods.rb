@@ -52,22 +52,6 @@ require 'colorized_string'
     puts "-----------------------------"
   end
 
-  # def help_menu
-  #   line
-  #   puts "Here are your options:"
-  #   puts ""
-  #   puts "1. See a list of all recipes by name"
-  #   puts "2. Search for a recipe by name"
-  #   puts "3. Search for a list of recipes by ingredient"
-  #   puts "4. View your favorites list"
-  #   puts "5. Edit your favorites list"
-  #   puts "6. See a list of the most popular recipes"
-  #   puts "7. See a list of the most-used ingredients"
-  #   puts "8. Exit the program"
-  #   puts ""
-  #   puts "Type 'menu' at any time to return to the options menu!"
-  # end
-
   def menu(user)
     line
     puts "Please choose one:".colorize(:blue)
@@ -84,13 +68,6 @@ require 'colorized_string'
     choice = new_select("", menu_items)
     run(user, choice)
   end
-
-  # def get_number(user)
-  #   line
-  #   puts "Please enter a number(1-8) to choose an option, or enter menu to see the option menu:".colorize(:blue)
-  #   number = gets.chomp
-  #   run(user, number)
-  # end
 
   def run(user, choice)
     case choice
@@ -121,15 +98,8 @@ require 'colorized_string'
       line
       most_used_ingredients
       menu(user)
-    # when "menu"
-    #   # help_menu
-    #   menu
-    #   get_number(user)
     when 8
       exit_program(user.name)
-    # else
-    #   puts "Input not recognized. Type 'menu' to see the options, or enter a number from 1-8"
-    #   get_number(user)
     end
   end
 
@@ -243,8 +213,6 @@ require 'colorized_string'
     choice = new_select("Would you like to add to your favorites, or remove something on your list?".colorize(:light_blue), ['add', 'remove'])
     if choice == "add"
       line
-      # puts "Please enter the name of the recipe you'd like to favorite:".colorize(:light_blue)
-      # recipe = format_recipe_name(gets.chomp)
       if list = find_recipe
         choices = list.map(&:name)
         additions = new_multi_select("Which recipe(s) would you like to add?".colorize(:light_blue), choices)
@@ -254,18 +222,11 @@ require 'colorized_string'
           user.view_favorites_list
         end
       end
-      # if Recipe.recipe_exists?(recipe)
-      #   user.add_to_favorites(Recipe.find_by(name:recipe))
-      #   line
-      #   user.view_favorites_list
-      # end
     elsif choice == "remove"
       line
       prompt = TTY::Prompt.new
       choices = user.list_favorites_names
       removals = prompt.multi_select("Which recipe(s) would you like to remove?".colorize(:light_blue), choices)
-      # puts "Please enter the name of the recipe you'd like to remove:"
-      # recipe = format_recipe_name(gets.chomp)
       removals.each do |removal|
         user.remove_from_favorites(Recipe.find_by(name:removal))
         line

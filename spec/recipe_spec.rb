@@ -1,5 +1,4 @@
 require_relative 'spec_helper'
-require 'pry'
 
 describe "Recipe" do
 
@@ -40,7 +39,5 @@ describe "Recipe" do
     end
 
   end
-
-
 
 end
