@@ -1,7 +1,9 @@
 require 'bundler'
 Bundler.require
 
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
+ENV['RAIlS_ENV'] ||= "development"
+
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "db/#{ENV['RAILS_ENV']}.sqlite")
 
 require_all 'lib'
 require_all 'app'
