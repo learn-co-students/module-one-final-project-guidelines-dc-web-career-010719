@@ -9,17 +9,12 @@ class Recipe < ActiveRecord::Base
   end
 
   def self.recipe_exists?(recipe_name)
-    # if !self.find_by(name: recipe_name) && !self.find_by(name: recipe_name.upcase)
     if self.where("name like ?", "%#{recipe_name}%").empty? && self.where("name like ?", "%#{recipe_name}%".upcase).empty?
       puts "We don't have a recipe by that name, sorry.".colorize(:red)
       return false
     else
       return true
     end
-  end
-
-  def self.most_popular_recipe
-    self.find(UserRecipe.group("recipe_id").where("user_recipes.favorite?" => true).count.max_by {|k,v| v }[0])
   end
 
   def self.popular_recipes
