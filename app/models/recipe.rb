@@ -26,4 +26,8 @@ class Recipe < ActiveRecord::Base
     top5.to_h.keys.map {|id| Recipe.find(id)}
   end
 
+  def self.popular_recipes
+    recipes = UserRecipe.group("recipe_id").where("user_recipes.favorite?" => true).count.sort_by{|k,v|v}.reverse
+    recipes.to_h.keys.map {|id| Recipe.find(id)}
+  end
 end

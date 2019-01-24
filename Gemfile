@@ -8,3 +8,5 @@ gem "require_all"
 gem "rspec"
 gem "rake"
 gem "database_cleaner"
+gem 'tty-prompt'
+gem 'colorize'

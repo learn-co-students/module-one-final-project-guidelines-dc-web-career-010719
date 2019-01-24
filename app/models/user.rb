@@ -11,17 +11,21 @@ class User < ActiveRecord::Base
     rec.toggle!(:favorite?)
   end
 
-  def my_favorites
+  def favorites
     favs = UserRecipe.where({user_id: self.id, favorite?: true})
     favs.map do |fav|
       rec = Recipe.find(fav.recipe_id)
     end
   end
 
-  def view_your_favorites_list
-    puts "Here is your current favorites list:"
-    self.my_favorites.each do |fav|
+  def view_favorites_list
+    puts "Here is your current favorites list:".colorize(:light_blue)
+    self.favorites.each do |fav|
       format_recipe(fav)
     end
+  end
+
+  def list_favorites_names
+    names = self.favorites.map(&:name)
   end
 end

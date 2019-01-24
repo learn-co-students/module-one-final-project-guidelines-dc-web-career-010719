@@ -1,4 +1,6 @@
 require_relative '../config/environment'
+require 'colorize'
+require 'colorized_string'
 
   def welcome_user
     puts "
@@ -13,16 +15,16 @@ require_relative '../config/environment'
                    _(/__/__(_/__(_/__(_/_/ (_
                            _/
                            /)
-                           `
+                           `".colorize(:light_blue)
 
-
+    puts "
                   ()   ()      ()   /
                     ()      ()  () /
                     ______________/___
                     \\            /   /
                      \\^^^^^^^^^^/^^^/
                       \\     ___/   /                     WELCOME
-                       \\   (   )  /                        TO THE
+                       \\   (   )  /                        TO OUR
                         \\  (___) /                           COCKTAIL
                          \\ /    /                              DATABASE!
                           \\    /
@@ -42,7 +44,7 @@ require_relative '../config/environment'
     name = gets.chomp.capitalize
     user = User.find_or_create_by(name: name)
     line
-    puts "Hello, #{user.name}! I am QL bot. I take commands from you."
+    puts "Hello, #{user.name}! I am QL bot. I take commands from you.".colorize(:blue)
     user
   end
 
@@ -50,74 +52,93 @@ require_relative '../config/environment'
     puts "-----------------------------"
   end
 
-  def help_menu
+  # def help_menu
+  #   line
+  #   puts "Here are your options:"
+  #   puts ""
+  #   puts "1. See a list of all recipes by name"
+  #   puts "2. Search for a recipe by name"
+  #   puts "3. Search for a list of recipes by ingredient"
+  #   puts "4. View your favorites list"
+  #   puts "5. Edit your favorites list"
+  #   puts "6. See a list of the most popular recipes"
+  #   puts "7. See a list of the most-used ingredients"
+  #   puts "8. Exit the program"
+  #   puts ""
+  #   puts "Type 'menu' at any time to return to the options menu!"
+  # end
+
+  def menu(user)
     line
-    puts "Here are your options:"
-    puts "1. See a list of all recipes by name"
-    puts "2. Search for a recipe by name"
-    puts "3. Search for a list of recipes by ingredient"
-    puts "4. View your favorites list"
-    puts "5. Edit your favorites list"
-    puts "6. See a list of the most popular recipes"
-    puts "7. See a list of the most-used ingredients"
-    puts "8. Exit the program"
-    puts ""
-    puts "Type 'menu' at any time to return to the options menu!"
+    puts "Please choose one:".colorize(:blue)
+    menu_items = {
+      "See a list of all recipes by name" => 1,
+      "Search for a recipe by name" => 2,
+      "Search for a list of recipes by ingredient" => 3,
+      "View your favorites list" => 4,
+      "Edit your favorites list" => 5,
+      "See a list of the most popular recipes" => 6,
+      "See a list of the most-used ingredients" => 7,
+      "Exit the program" => 8
+    }
+    choice = new_select("", menu_items)
+    run(user, choice)
   end
 
-  def get_number(user)
-    line
-    puts "Please enter a number(1-8) to choose an option, or enter menu to see the option menu:"
-    number = gets.chomp
-    run(user, number)
-  end
+  # def get_number(user)
+  #   line
+  #   puts "Please enter a number(1-8) to choose an option, or enter menu to see the option menu:".colorize(:blue)
+  #   number = gets.chomp
+  #   run(user, number)
+  # end
 
-  def run(user, number)
-    case number
-    when "1"
-      puts "You selected option 1. Here is the list of all recipes:"
+  def run(user, choice)
+    case choice
+    when 1
+      line
       list
-      get_number(user)
-    when "2"
-      puts "You selected option 2."
+      menu(user)
+    when 2
+      line
       find_recipe
-      get_number(user)
-    when "3"
-      puts "You selected option 3."
+      menu(user)
+    when 3
+      line
       search_by_ingredient
-      get_number(user)
-    when "4"
-      puts "You selected option 4."
-      user.view_your_favorites_list
-      get_number(user)
-    when "5"
-      puts "You selected option 5."
+      menu(user)
+    when 4
+      line
+      user.view_favorites_list
+      menu(user)
+    when 5
+      line
       edit_favorites_list(user)
-      get_number(user)
-    when "6"
-      puts "You selected option 6."
+      menu(user)
+    when 6
       most_popular_recipes
-      get_number(user)
-    when "7"
-      puts "You selected option 7."
+      menu(user)
+    when 7
+      line
       most_used_ingredients
-      get_number(user)
-    when "menu"
-      help_menu
-      get_number(user)
-    when "8"
-      exit_program
-    else
-      puts "Input not recognized. Type 'menu' to see the options, or enter a number from 1-8"
-      get_number(user)
+      menu(user)
+    # when "menu"
+    #   # help_menu
+    #   menu
+    #   get_number(user)
+    when 8
+      exit_program(user.name)
+    # else
+    #   puts "Input not recognized. Type 'menu' to see the options, or enter a number from 1-8"
+    #   get_number(user)
     end
   end
 
-  def exit_program
-    puts "Goodbye! See you again soon. Or not."
+  def exit_program(name)
+    puts "Goodbye, #{name}! See you again soon. Or not."
   end
 
   def list
+    puts "Here's a list of all the recipes we have:"
     Recipe.all.each_with_index do |rec, index|
       puts "#{index+1}. #{rec.name}"
     end
@@ -155,7 +176,7 @@ require_relative '../config/environment'
   def format_recipe(recipe)
     line
     puts "* Recipe: #{recipe.name}"
-    puts "* Instruction: #{recipe.instruction}"
+    puts "* Instructions: #{recipe.instruction}"
     recipe_ings = RecipeIngredient.where("recipe_id = ?", recipe.id)
     ams = recipe_ings.map(&:amount)
     ings = recipe.ingredients.map(&:name)
@@ -163,22 +184,36 @@ require_relative '../config/environment'
     puts "* List of ingredients:"
     array.each do |ing|
       if ing[1] == ""
-        ing[1] = "to taste"
+        ing[1] = "unspecified"
       end
       puts "   #{ing[0].capitalize} -- #{ing[1]}"
     end
   end
 
+  # def most_popular_recipes
+  #   Recipe.five_most_popular_recipes.each_with_index do |r,i|
+  #     line
+  #     puts "The number #{i+1} recipe is:".colorize(:light_blue)
+  #     format_recipe(r)
+  #   end
+  # end
+
   def most_popular_recipes
-    Recipe.five_most_popular_recipes.each_with_index do |r,i|
+    puts "How many of our top recipes would you like to see? (Please enter a number.)".colorize(:light_blue)
+    num = gets.chomp.to_i
+    until num <= Recipe.all.size
+      puts "Sorry, that's more recipes than we have in our database!  Can you choose a smaller number please?"
+      num = gets.chomp.to_i
+    end
+    Recipe.popular_recipes.each_with_index do |r,i|
       line
-      puts "The number #{i+1} recipe is:"
+      puts "The number #{i+1} most popular recipe is:".colorize(:light_blue)
       format_recipe(r)
+      break if i == num - 1
     end
   end
 
   def most_used_ingredients
-    line
     puts "Here are the five most-used ingredients among the drinks in our database:"
     line
     Ingredient.five_most_used_ingredients.each_with_index do |ing, ind|
@@ -186,29 +221,45 @@ require_relative '../config/environment'
     end
   end
 
+  def new_select(prompt, choices)
+    p = TTY::Prompt.new
+    p.select(prompt, choices)
+  end
+
+  def new_multi_select(prompt, choices)
+    p = TTY::Prompt.new
+    p.multi_select(prompt, choices)
+  end
+
   def edit_favorites_list(user)
     line
-    user.view_your_favorites_list
+    user.view_favorites_list
     line
-    puts "Enter 'add' to add to your favorites list, or 'remove' to remove something you've already favorited."
-    input = gets.chomp.downcase
-    if input == "add"
+    # puts "Enter 'add' to add to your favorites list, or 'remove' to remove something you've already favorited."
+    # input = gets.chomp.downcase
+    choice = new_select("Would you like to add to your favorites, or remove something on your list?".colorize(:light_blue), ['add', 'remove'])
+    if choice == "add"
       line
-      puts "Please enter the name of the recipe you'd like to favorite:"
+      puts "Please enter the name of the recipe you'd like to favorite:".colorize(:light_blue)
       recipe = format_recipe_name(gets.chomp)
       if Recipe.recipe_exists?(recipe)
         user.add_to_favorites(Recipe.find_by(name:recipe))
         line
-        user.view_your_favorites_list
+        user.view_favorites_list
       end
-    elsif input == "remove"
+    elsif choice == "remove"
       line
-      puts "Please enter the name of the recipe you'd like to remove:"
-      recipe = format_recipe_name(gets.chomp)
-      if Recipe.recipe_exists?(recipe)
-        user.remove_from_favorites(Recipe.find_by(name:recipe))
-        line
-        user.view_your_favorites_list
+      prompt = TTY::Prompt.new
+      choices = user.list_favorites_names
+      removals = prompt.multi_select("Which recipe(s) would you like to remove?".colorize(:light_blue), choices)
+      # puts "Please enter the name of the recipe you'd like to remove:"
+      # recipe = format_recipe_name(gets.chomp)
+      removals.each do |removal|
+        if Recipe.recipe_exists?(removal)
+          user.remove_from_favorites(Recipe.find_by(name:removal))
+          line
+          user.view_favorites_list
+        end
       end
     else
       "Sorry, I don't recognize that command."
