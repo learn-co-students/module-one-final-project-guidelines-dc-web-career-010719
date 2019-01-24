@@ -2,6 +2,7 @@ require 'pry'
 require 'tty-font'
 require 'pastel'
 
+
 class PlannerCLI
 
 
@@ -9,21 +10,10 @@ class PlannerCLI
 def greeting
   pastel = Pastel.new
   font = TTY::Font.new(:starwars)
-  puts pastel.cyan(font.write("Plan-it_Fest!"))
-  puts "\n\nWe've got six big months ahead of us, it's festival season baby!!!!\n\n"
+  puts pastel.bright_cyan(font.write("Plan-it' 'Fest!"))
+  puts "\n\nWe've got SIX big months ahead of us, it's festival season baby!!!!\n\n"
   menu
 end
-
-# def menu
-#   puts "What's your festival availabilty?\n\n"
-#   puts "1. Instructions"
-#   puts "2. View festivals"
-#   puts "3. Add festivals to planner"
-#   puts "4. Search for a schedule"
-#   puts "5. View the team schdeule"
-#   puts "6. Exit\n\n"
-#   main_menu_loop
-# end
 
 
 #Intial menu when entering the command line
@@ -32,29 +22,49 @@ def menu
   @choice = prompt.select("Choose from the options below:") do |menu|
     menu.enum '.'
     menu.choice "Instructions", 1
-    menu.choice "View festivals", 2
-    menu.choice "Add festival(s) to planner", 3
-    menu.choice "Search for a schedule", 4
-    menu.choice "View the team schedule", 5
-    menu.choice "Exit", 6
+    menu.choice "View Festivals", 2
+    menu.choice "Add Festival(s) to Planner", 3
+    menu.choice "Search for a Schedule", 4
+    menu.choice "View All Schedules", 5
+    menu.choice "Count by Festival", 6
+    menu.choice "Exit", 7
   end
   @choice
 end
 
+def instructions
+   puts "
+                       ----------------------------------------------------------------------------------------------------
+                               -  Type your choose from one of the menu options below:
+                                               1. Help - Instructions
 
-# def menu_no_loop
-#   prompt = TTY::Prompt.new
-#   @choice = prompt.select("Choose from the options below:") do |menu|
-#     menu.enum '.'
-#     menu.choice "Instructions", 1
-#     menu.choice "View festivals", 2
-#     menu.choice "Add festivals to planner", 3
-#     menu.choice "Search for a schedule", 4
-#     menu.choice "View the team schdeule", 5
-#     menu.choice "Exit", 6
-#   end
-#   @choice
-# end
+                                               2. View festivals
+                                                a. Shows all available festivals and relevant information
+
+                                               3. Add festival(s) to planner
+                                                a. Provide key user information and choose the festivals you wish to attend.
+                                                b. To exit at any point type '7'
+                                                c. Prints out the users schedule
+
+                                               4. Search for a schedule
+                                                 a. By name (first & last) and location (City, State) search for a given schedule
+
+                                               5. View the all schedules
+                                                a. Prints out all schedules from the group
+
+                                                6. Count by Festival
+                                                  a. By festival prints out the total number of attendees
+
+                                                7. Exit
+
+                               -  You may make multiple selections until you are finished.
+                               -  If you're having issues exiting this app, please press '7' or choose 'Exit' from the menu.
+                               -  You may reference README.md for further instruction.
+
+                       ----------------------------------------------------------------------------------------------------
+   "
+  end
+
 
 
 #Loops through menu items
@@ -63,29 +73,24 @@ def main_menu_loop
     # binding.pry
     case input = @choice
       when 1
-        puts "keep looping"
+        self.instructions
+        self.menu
       when 2
         self.return_all_festivals
         self.menu
       when 3
         self.add_festivals_to_planner
       when 4
-        # puts "\nWhat's your first name?\n\n"
-        # user_hash = {}
-        # user_hash[:first_name] = gets.chomp.to_s
-        # puts "\n\n"
-        # puts "What's your last name?\n\n"
-        # user_hash[:last_name] = gets.chomp.to_s
         puts "\n\n"
         user = self.create_or_find_user
         self.return_schedule(user)
       when 5
         self.return_all_schedules
       when 6
+        self.count_all_festivals
+      when 7
         puts "\nPut the camera down and enjoy yourself!\n\n"
         return
-      else
-        puts "Hmmm... 1-6, not #{input}, try again."
     end
   end
 end
@@ -102,16 +107,14 @@ end
   def add_festivals_to_planner
      attendee = self.create_or_find_user
     loop do
-    puts "Which festival do you want to attend?\n\n"
-      festival = gets.chomp.to_s #Lollapalooza
+    puts "Which festival do you want to attend?\n   To exit at any time type 6\n\n"
+      festival = gets.chomp #Lollapalooza
       all_festivals = Festival.all.map {|festival| festival.name}
      # binding.pry
       if all_festivals.include?(festival)
         add_festival = self.find_festival(festival)
-        puts "Name your trip\n\n"
-        trip_name = gets.chomp
-        Planner.create(name: trip_name, user: attendee, festival: add_festival)
-      elsif "Exit"
+        Planner.create(user: attendee, festival: add_festival)
+      elsif 6
         # binding.pry
         puts "Exiting..."
         puts "\n-----------------------------------------------------------------------------------------------------\n\n"
@@ -130,11 +133,11 @@ end
       user_hash = {}
       puts "\nFirst, we need a little information.\n\n"
       puts "What's your first name?\n\n"
-      user_hash[:first_name] = gets.chomp.to_s
+      user_hash[:first_name] = gets.chomp
       puts "What's your last name?\n\n"
-      user_hash[:last_name] = gets.chomp.to_s
+      user_hash[:last_name] = gets.chomp
       puts "What's your location? (format: City, State)\n\n"
-      user_hash[:location] = gets.chomp.to_s
+      user_hash[:location] = gets.chomp
       new_user = User.find_or_create_by(user_hash)
       new_user
     end
@@ -153,7 +156,7 @@ end
         puts "\n\n"
         puts "#{user_hash[:first_name]} #{user_hash[:last_name]}'s Schedule:\n\n"
         plans.each_with_index.map do |event, index|
-          puts "#{index + 1}. Trip Name: #{event.name} | Festival: #{event.festival.name} | Dates: #{event.festival.start_date} - #{event.festival.end_date} "
+          puts "#{index + 1}. Festival: #{event.festival.name} | Dates: #{event.festival.start_date} - #{event.festival.end_date} "
         end
         puts "\n\n"
         self.menu
@@ -161,10 +164,24 @@ end
 
     def return_all_schedules
       Planner.all.each_with_index.map do |event, index|
-        puts "#{index + 1}. Trip Name: #{event.name} | Festival: #{event.festival.name} | Dates: #{event.festival.start_date} - #{event.festival.end_date} "
+        puts "#{index + 1}. Attendee: #{event.user.name} | Festival: #{event.festival.name} | Dates: #{event.festival.start_date} - #{event.festival.end_date} "
       end
       puts "\n\n"
-      self.menu
-      puts "\n\n"
     end
+
+    def count_all_festivals
+      count = 0
+      festival_count = []
+      all_festivals = Festival.all.map {|festival| festival.name}
+      Planner.all.each do |f|
+        if !all_festivals.include? f.festival.name
+          festival_count << "#{f.festival.name}: #{count = 1}"
+        else
+          festival_count << "#{f.festival.name}: #{count += 1}"
+          puts festival_count.each_with_index.map { |f,i| "#{i + 1}. f"}
+          binding.pry
+        end
+      end
+    end
+
 end
