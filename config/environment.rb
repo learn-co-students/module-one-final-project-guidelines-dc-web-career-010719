@@ -1,13 +1,7 @@
 require 'bundler'
 Bundler.require
 
-<<<<<<< HEAD
-ENV['RAIlS_ENV'] ||= "development"
 
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "db/#{ENV['RAILS_ENV']}.sqlite")
-
-=======
->>>>>>> 3455890ee3f2ec3726c379a0d3828c0621069ffb
 require_all 'lib'
 require_all 'app'
 
