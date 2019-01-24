@@ -40,7 +40,7 @@ require 'colorized_string'
                       ==============
 
     "
-    puts "Welcome to Quicker Liquor! Please enter your name:"
+    puts "Welcome to Quicker Liquor! Please enter your name:".colorize(:light_blue)
     name = gets.chomp.capitalize
     user = User.find_or_create_by(name: name)
     line
@@ -128,11 +128,11 @@ require 'colorized_string'
   end
 
   def search_by_ingredient
-    puts "Please input the ingredient name:"
+    puts "Please input the ingredient name:".colorize(:light_blue)
     name = gets.chomp.split(" ").map(&:capitalize).join(" ")
     line
-    if !Ingredient.where("name like ?", "%#{name}%")
-      puts "We don't have any recipes with that ingredient."
+    if Ingredient.where("name like ?", "%#{name}%").empty?
+      puts "We don't have any recipes with that ingredient.".colorize(:red)
     else
       ings = Ingredient.where("name like ?", "%#{name}%")
       ings.each do |ing|

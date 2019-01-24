@@ -11,7 +11,7 @@ class Recipe < ActiveRecord::Base
   def self.recipe_exists?(recipe_name)
     # if !self.find_by(name: recipe_name) && !self.find_by(name: recipe_name.upcase)
     if self.where("name like ?", "%#{recipe_name}%").empty? && self.where("name like ?", "%#{recipe_name}%".upcase).empty?
-      puts "We don't have that recipe, sorry."
+      puts "We don't have a recipe by that name, sorry.".colorize(:red)
       return false
     else
       return true
