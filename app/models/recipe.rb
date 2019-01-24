@@ -8,6 +8,15 @@ class Recipe < ActiveRecord::Base
     RecipeIngredient.create(recipe_id: self.id, ingredient_id: ingredient.id, amount: amount)
   end
 
+  def self.recipe_exists?(recipe_name)
+    if !self.find_by(name: recipe_name)
+      puts "We don't have that recipe."
+      return false
+    else
+      return true
+    end
+  end
+
   def self.most_popular_recipe
     self.find(UserRecipe.group("recipe_id").where("user_recipes.favorite?" => true).count.max_by {|k,v| v }[0])
   end
