@@ -7,7 +7,7 @@ class PlannerCLI
   def greeting
     pastel = Pastel.new
     font = TTY::Font.new(:starwars)
-    puts pastel.bright_cyan(font.write('Plan-It-Fest!'))
+    puts pastel.bright_cyan(font.write('Plan-It-Fest'))
     puts "\n\nWe've got SIX big months ahead of us, it's festival season baby!!!!\n\n"
     menu
   end
