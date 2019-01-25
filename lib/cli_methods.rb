@@ -49,11 +49,21 @@ require 'colorized_string'
   end
 
   def line
-    puts "-----------------------------".colorize(:blue)
+    puts "----------------------------------------------------------".colorize(:blue)
+  end
+
+  def stars
+    puts "**********************************************************".colorize(:blue)
+  end
+
+  def menu_bar
+    line
+    stars
+    line
   end
 
   def menu(user)
-    line
+    menu_bar
     menu_items = {
       "See a list of all recipes by name" => 1,
       "Search for a recipe by name" => 2,
@@ -161,7 +171,7 @@ require 'colorized_string'
       if ing[1] == "" || ing[1] == "\n"
         ing[1] = "unspecified"
       end
-      puts "   #{ing[0].capitalize} -- #{ing[1]}"
+      puts "   #{ing[0]} -- #{ing[1]}"
     end
   end
 
@@ -176,24 +186,36 @@ require 'colorized_string'
     num
   end
 
+  def chastise_user_for_entering_zero(num, item)
+    if num == 0
+      puts "Okay, showing you 0 #{item}.......
+
+
+      There's nothing here.".colorize(:light_blue)
+    end
+  end
+
   def most_popular_recipes
     num = prompt_for_list_limit(Recipe.all, "recipes")
     Recipe.popular_recipes.each_with_index do |r,i|
+      chastise_user_for_entering_zero(num, "recipes")
+      break if i == num || num == 0 #chastise_user_for_entering_zero(num)
       line
       puts "The number #{i+1} most popular recipe is:".colorize(:light_blue)
       format_recipe(r)
-      break if i == num - 1
     end
   end
 
   def most_used_ingredients
     num = prompt_for_list_limit(Ingredient.all, "ingredients")
     line
+    chastise_user_for_entering_zero(num, "ingredients")
+    return if num == 0
     puts "Here are the #{num} most-used ingredients:".colorize(:light_blue)
-    line
+    # line
     Ingredient.used_ingredients.each_with_index do |ing, ind|
+      break if ind == num #|| num == 0#chastise_user_for_entering_zero(num)
       puts "#{ind+1}. #{ing.name}"
-      break if ind == num - 1
     end
   end
 
@@ -210,10 +232,13 @@ require 'colorized_string'
   def prompt_user_to_add_favorites(user)
     line
     if list = find_recipe
+      line
       new_multi_select("Which recipe(s) would you like to add?", list.map(&:name)).each do |a|
         user.add_to_favorites(Recipe.find_by(name:a)) unless user.favorites.include?(Recipe.find_by(name:a))
-        user.view_favorites_list
       end
+      line
+      stars
+      user.view_favorites_list
     end
   end
 
@@ -221,8 +246,10 @@ require 'colorized_string'
     line
     new_multi_select("Which recipe(s) would you like to remove?", user.list_favorites_names).each do |r|
       user.remove_from_favorites(Recipe.find_by(name:r))
-      user.view_favorites_list
     end
+    line
+    stars
+    user.view_favorites_list
   end
 
   def edit_favorites_list(user)
