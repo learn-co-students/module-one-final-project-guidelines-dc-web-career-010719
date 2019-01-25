@@ -40,6 +40,12 @@ RSpec.configure do |config|
   config.order = 'default'
 end
 
+def suppress_log_output
+  allow(STDOUT).to receive(:puts) # this disables puts
+  logger = double('Logger').as_null_object
+  allow(Logger).to receive(:new).and_return(logger)
+end
+
 
 
 

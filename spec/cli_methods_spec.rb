@@ -1,4 +1,4 @@
-require_relative '../config/environment'
+require_relative 'spec_helper'
 
 context "CLI methods" do
 

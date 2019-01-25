@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   def remove_from_favorites(recipe)
     rec = UserRecipe.find_by(user_id: self.id, recipe_id: recipe.id, favorite?: true)
     rec.toggle!(:favorite?)
+    rec
   end
 
   def favorites

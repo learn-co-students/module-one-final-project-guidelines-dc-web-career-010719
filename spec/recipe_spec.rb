@@ -2,6 +2,10 @@ require_relative 'spec_helper'
 
 describe "Recipe" do
 
+  before do
+    suppress_log_output
+  end
+
   describe "#recipe_exists?" do
 
     let!(:recipe) {Recipe.create(name:"Gin and Tonic")}
