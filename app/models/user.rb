@@ -27,6 +27,17 @@ class User < ActiveRecord::Base
     end
   end
 
+  def view_favorites_list_as_names
+    line
+    puts "Here is your current favorites list:".colorize(:light_blue)
+    puts self.favorites.map(&:name)
+  end
+
+  def view_favorites_list_as_menu
+    line
+    offer_recipes_as_menu("Here is your current favorites list:".colorize(:light_blue), self.favorites)
+  end
+
   def list_favorites_names
     names = self.favorites.map(&:name)
   end
