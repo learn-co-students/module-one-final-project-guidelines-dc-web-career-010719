@@ -1,5 +1,8 @@
-require_relative '../config/environment'
+require_relative '../config/environment.rb'
+
+
+cli = PlannerCLI.new
 
 
 
-puts "HELLO WORLD"
+cli.greeting
